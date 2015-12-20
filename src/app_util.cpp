@@ -122,7 +122,7 @@ bool guiMouseDrag ( float x, float y )	{ return g_Gui.MouseDrag(x,y); }
 
 //------------------------------------------------------ UTILITIES
 
-bool LocateFile ( char* filename, char* outpath, char** searchPaths, int numPaths )
+bool LocateFileInPaths ( char* filename, char* outpath, char** searchPaths, int numPaths )
 {
 	bool found = false;
 	FILE* fp = fopen( filename, "rb" );

@@ -30,11 +30,10 @@
 	public:
 		Scene();
 		~Scene();
-		static Scene*			gScene;
-		static CallbackParser*	gParse;
-
+	
 		void		LoadFile ( std::string filename );		
 		void		AddPath ( std::string path );
+		bool		LocateFile( char* name, char* filename);
 		Camera3D*	AddCamera ();
 		Light*		AddLight ();
 		int			AddModel ( std::string filename, float scale=1.0 );
@@ -101,5 +100,8 @@
 		// Shadow parameters (independent of method used)
 		Vector4DF				mShadowParams;
 	};
+
+	extern Scene*			gScene;
+	extern CallbackParser*	gParse;
 
 #endif

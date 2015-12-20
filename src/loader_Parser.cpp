@@ -180,7 +180,7 @@ void Parser::ParseFile ( char *fname, char **searchPaths, int numPaths )
 	char fileName[1024];
 
 	// Locate the file
-	if ( !LocateFile ( fname, fileName, searchPaths, numPaths ) ) {
+	if ( !LocateFileInPaths ( fname, fileName, searchPaths, numPaths ) ) {
 		nvprintf ("Error: Parser unable to find '%s'\n", fname );
 		nverror ();
 	}

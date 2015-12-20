@@ -97,7 +97,7 @@
 	#include <string>
 	#include <vector>
 
-	extern bool LocateFile ( char* filename, char* outpath, char** searchPaths, int numPaths );
+	extern bool LocateFileInPaths ( char* filename, char* outpath, char** searchPaths, int numPaths );
 
 	int strToI (std::string s);
 	float strToF (std::string s);

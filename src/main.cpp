@@ -352,8 +352,10 @@ bool AppWindow::init ()
 	nvprintf ( "  Project path: %s\n", std::string(PROJECT_ABSDIRECTORY).c_str() );
 	scene.AddPath ( "..\\assets\\" );
 	scene.AddPath ( "..\\shaders\\" );
+	scene.AddPath ( std::string(PROJECT_RELDIRECTORY) );
 	scene.AddPath ( std::string(PROJECT_RELDIRECTORY) + "\\assets\\" );
 	scene.AddPath ( std::string(PROJECT_RELDIRECTORY) + "\\shaders\\" );
+	scene.AddPath ( std::string(PROJECT_ABSDIRECTORY) );
 	scene.AddPath ( std::string(PROJECT_ABSDIRECTORY) + "\\assets\\" );
 	scene.AddPath ( std::string(PROJECT_ABSDIRECTORY) + "\\shaders\\" );
 	scene.LoadFile ( filename );
@@ -377,7 +379,7 @@ bool AppWindow::init ()
 		nvprintf  ( "Initializing Optix..\n" );
 		renderInitializeOptix ( getWidth(), getHeight() );
 		nvprintf  ( "Adding models to Optix..\n" );
-		int mat_id = renderAddMaterialOptix ( scene, "optix_shadow_rays" );
+		int mat_id = renderAddMaterialOptix ( scene, "optix_shadow_rays.ptx" );
 		
 		for (int n=0; n < scene.getNumModels(); n++ )
 			renderAddModelOptix ( scene.getModel(n), mat_id );

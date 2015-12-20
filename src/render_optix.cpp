@@ -31,11 +31,19 @@ int OPTIX_CLRSPEC;
 
 optix::Program CreateProgramOptix ( std::string name, std::string prog_func )
 {
+	char fname[2048];
+	char filename[2048];
 	optix::Program program;
+	strcpy(fname, name.c_str());
+
+	if (!gScene->LocateFile( fname, filename )) {
+		nvprintf("  ERROR: Cannot find %s\n", name.c_str());
+		nverror();
+	}
 
 	nvprintf  ( "  Loading: %s, %s\n", name.c_str(), prog_func.c_str() );
 	try { 
-		program = g_OptixContext->createProgramFromPTXFile ( name, prog_func );
+		program = g_OptixContext->createProgramFromPTXFile ( filename, prog_func );
 	} catch (Exception e) {
 		nvprintf  ( "  OPTIX ERROR: %s \n", g_OptixContext->getErrorString( e.getErrorCode() ).c_str() );
 		nverror ();		
@@ -62,9 +70,17 @@ Buffer CreateOutputOptix ( RTformat format, unsigned int width, unsigned int hei
 	return buffer;
 }
 
-void CreateMaterialOptix ( Material material, std::string filename, std::string ch_name, std::string ah_name )
-{
-	std::string ptx_file = filename + ".ptx";
+void CreateMaterialOptix ( Material material, std::string name, std::string ch_name, std::string ah_name )
+{	 
+	char fname[2048];
+	char ptx_file[2048];
+	strcpy(fname, name.c_str());
+
+	if ( !gScene->LocateFile( fname, ptx_file) ) {
+		nvprintf("ERROR: Unable to locate file %s\n", name.c_str());
+		nverror();
+	}
+
 	Program ch_program = CreateProgramOptix ( ptx_file, ch_name );
 	Program ah_program = CreateProgramOptix ( ptx_file, ah_name );
 	material->setClosestHitProgram ( 0, ch_program );

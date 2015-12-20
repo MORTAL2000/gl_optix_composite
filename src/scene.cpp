@@ -5,8 +5,8 @@
 #include "loader_ObjarReader.h" 
 #include "loader_OBJReader.h" 
 
-Scene* Scene::gScene = 0x0;
-CallbackParser* Scene::gParse = 0x0;
+Scene* gScene = 0x0;
+CallbackParser* gParse = 0x0;
 
 Scene::Scene ()
 {
@@ -125,11 +125,11 @@ int Scene::AddShader (char* vertfile, char* fragfile )
 	// Search paths
 	char vertpath[1024];
 	char fragpath[1024];
-	if ( !LocateFile ( vertfile, vertpath, mSearchPaths, mNumPaths ) ) {
+	if ( !LocateFile ( vertfile, vertpath ) ) {
 		nvprintf ( "ERROR: Unable to open '%s'\n", vertfile ); 
 		nverror ();
 	}
-	if ( !LocateFile ( fragfile, fragpath, mSearchPaths, mNumPaths ) ) {
+	if ( !LocateFile ( fragfile, fragpath ) ) {
 		nvprintf ( "ERROR: Unable to open '%s'\n", fragfile ); 
 		nverror ();
 	}
@@ -449,6 +449,11 @@ void Scene::UpdateValue ( char obj, int objid, long varid, Vector3DF val )
 		case 'over': mShadowParams.w = val.x;	break;
 		};
 	}
+}
+
+bool Scene::LocateFile( char* name, char* outpath )
+{	
+	return LocateFileInPaths (name, outpath, mSearchPaths, mNumPaths);	
 }
 
 void Scene::LoadFile ( std::string filestr  )

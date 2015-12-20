@@ -55,12 +55,42 @@ endif()
 # Source files for this project
 #
 file(GLOB SOURCE_FILES src/*.cpp src/*.hpp src/*.inl src/*.h src/*.c)
+
 #####################################################################################
 # additional files for tools/helpers
 #
 SET(COMMON_SOURCE_FILES ${GLEW_SOURCE}   
 )
 
+#####################################################################################
+# Custom Build for OptiX CUDA files
+#####################################################################################
+
+# Get list of .cu file
+file(GLOB CUDA_FILES "shaders/*.cu" )
+
+# Compile to PTX as build step
+NVCUDA_COMPILE_PTX( SOURCES ${CUDA_FILES} TARGET_PATH "${CMAKE_BINARY_DIR}/ptx" GENERATED_FILES PTX_SOURCES NVCC_OPTIONS "-arch=sm_20" "-I${OPTIX_ROOT_DIR}/include" )
+
+#if ( USE_OPTIX )
+#	file(GLOB CUDA_LIST "shaders/*.cu")
+#   unset(CUDA_TARGETS CACHE)
+#	foreach (CUFILE ${CUDA_LIST} )
+#	  get_filename_component ( CUDIR "${CUFILE}" PATH )
+#	  get_filename_component ( CUROOT "${CUFILE}" NAME_WE )
+#	  message ( STATUS "Compiling CUDA file: ${CUDIR}/${CUROOT}.cu" )
+#	  add_custom_command (         
+#		 OUTPUT ${CUROOT}.ptx
+#		 COMMAND "${CUDA_ROOT_DIR}\\bin\\nvcc" --use_fast_math --use-local-env --cl-version 2010 -Xcompiler "/Gm,/Zi" ${CUFILE} -I${OPTIX_ROOT_DIR}/include -I../src -ptx -o ${CUROOT}.ptx
+#		 DEPENDS ${CUFILE} 
+#		 COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CUROOT}.ptx $<TARGET_FILE_DIR:${PROJNAME}>
+#		 VERBATIM
+#		 )    
+#	  add_custom_target ( ${CUROOT} ALL DEPENDS ${CUROOT}.ptx )
+#	  list(APPEND CUDA_TARGETS "${CUROOT}.ptx")  
+#	endforeach()
+#	message ( STATUS "Targets: ${CUDA_TARGETS}" )
+# endif()
 
 #####################################################################################
 # Executable
@@ -70,9 +100,9 @@ if(WIN32 AND NOT GLUT_FOUND)
   add_definitions(/wd4996) #remove printf warning
   add_definitions(/wd4244) #remove double to float conversion warning
   add_definitions(/wd4305) #remove double to float truncation warning
-  add_executable(${PROJNAME} WIN32 ${SOURCE_FILES} ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES})
+  add_executable(${PROJNAME} WIN32 ${SOURCE_FILES} ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES} ${CUDA_FILES} ${PTX_SOURCES})
 else()
-  add_executable(${PROJNAME} ${SOURCE_FILES} ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES})
+  add_executable(${PROJNAME} ${SOURCE_FILES} ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES} ${CUDA_FILES} ${PTX_SOURCES})
 endif()
 
 #####################################################################################
@@ -81,47 +111,27 @@ endif()
 source_group(common FILES 
   ${COMMON_SOURCE_FILES}
 )
+source_group(CUDA FILES 
+  ${CUDA_FILES}
+)
+source_group(ptx FILES 
+  ${PTX_SOURCES}
+)
+
 #####################################################################################
 # Linkage
 #
 target_link_libraries(${PROJNAME} optimized
     ${LIBRARIES_OPTIMIZED}
-    ${PLATFORM_LIBRARIES}
+    ${PLATFORM_LIBRARIES} 
 )
 target_link_libraries(${PROJNAME} debug
     ${LIBRARIES_DEBUG}
-    ${PLATFORM_LIBRARIES}
+    ${PLATFORM_LIBRARIES} 
 )
 message ( STATUS "Libraries used: ${LIBRARIES_DEBUG}" )
 
 
-#####################################################################################
-# Custom Build for OptiX files
-#####################################################################################
-
-if ( USE_OPTIX )
-
-	file(GLOB CUDA_LIST "shaders/*.cu")
-	unset(CUDA_TARGETS CACHE)
-
-	foreach (CUFILE ${CUDA_LIST} )
-	  get_filename_component ( CUDIR "${CUFILE}" PATH )
-	  get_filename_component ( CUROOT "${CUFILE}" NAME_WE )
-	  message ( STATUS "Compiling CUDA file: ${CUDIR}/${CUROOT}.cu" )
-	  add_custom_command (         
-		 OUTPUT ${CUROOT}.ptx
-		 COMMAND "${CUDA_ROOT_DIR}\\bin\\nvcc" --use_fast_math --use-local-env --cl-version 2010 -Xcompiler "/Gm,/Zi" ${CUFILE} -I${OPTIX_ROOT_DIR}/include -I../src -ptx -o ${CUROOT}.ptx
-		 DEPENDS ${CUFILE} 
-		 COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CUROOT}.ptx $<TARGET_FILE_DIR:${PROJNAME}>
-		 VERBATIM
-		 )    
-	  add_custom_target ( ${CUROOT} ALL DEPENDS ${CUROOT}.ptx )
-	  list(APPEND CUDA_TARGETS "${CUROOT}.ptx")  
-	endforeach()
-
-	message ( STATUS "Targets: ${CUDA_TARGETS}" )
-
-endif()
 
 
 #####################################################################################
