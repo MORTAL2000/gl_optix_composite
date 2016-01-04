@@ -7,8 +7,7 @@ unset(CUDA_VERSION CACHE)
 unset(CUDA_FOUND CACHE)
 unset(RESULT CACHE)
 
-#debug
-message("Custom FindCUDA module")
+message("Running custom FindCUDA module")
 
 if ( NOT DEFINED ${CUDA_LOCATION} )
 	SET(CUDA_LOCATION "$ENV{CUDA_PATH}" CACHE PATH "path")
