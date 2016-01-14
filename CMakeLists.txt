@@ -36,8 +36,8 @@ _add_project_definitions(${PROJNAME})
 #
 unset(USE_OPTIX CACHE)
 
-# use a custom FindCUDA module
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+# use a custom FindCUDA module instead of the default CMake version
+set(CMAKE_MODULE_PATH "${BASE_DIRECTORY}/shared_sources/cmake/private;${CMAKE_MODULE_PATH}")
 _add_package_Cuda ()
 
 if ( CUDA_FOUND )
