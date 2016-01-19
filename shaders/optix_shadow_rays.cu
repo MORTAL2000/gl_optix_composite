@@ -115,7 +115,7 @@ RT_PROGRAM void closest_hit_radiance()
 	const float3 fhp = rtTransformPoint(RT_OBJECT_TO_WORLD, front_hit_point);
 	const float3 i = ray.direction;                                            // incident direction
 	float3 L, P;
-	float shadow; 
+	float shadow = 0.0f;
 
 	if ( num_samples == 1 ) {
 		shadow = ShadowRay ( fhp, normalize(light_pos - fhp) );
