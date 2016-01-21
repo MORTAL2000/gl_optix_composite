@@ -35,31 +35,21 @@ These images compare 1 spp and 8 spp hard shadows. By increasing the number of s
 
 To generate multiple shadow rays, these rays must be contained within a single pixel/fragment. In this demo, the pixel is projected into world-space at the hit point of the primary ray. At this point, we use the normal to determine the orientation of the fragment, and construct a sampling disc oriented to contain the fragment. 8x random points are then generated inside this disc, pushed slightly along the geometry normal N in order to reduce biasing artifacts. These points represent the starting points of the shadow rays, while all rays will point toward a point light source. By averaging these ray contributions, we can determine the fractional shadow value for a given pixel.
 
-#### Requirements
-
-Requirements:<br>
-- Visual Studio 2010/2012<br>
-- CUDA 5.5 Toolkit<br>
-To run this sample, you must install the CUDA 5.5 Toolkit. https://developer.nvidia.com/cuda-toolkit-55-archive
- (Other versions of CUDA are not yet supported).
-- OptiX 3.6.3 SDK is needed from the shared_optix repo, so no external libraries are needed aside from CUDA 5.5.
-
 #### How to Build & Run
 
 Quick build instructions:
 
 1) Clone the following NVPro-samples repositories:
-  - //github.com/nvpro-samples/build_all.git
   - //github.com/nvpro-samples/shared_optix.git
   - //github.com/nvpro-samples/shared_sources.git
   - //github.com/nvpro-samples/gl_optix_composite.git
 
-2) Download and install CMake 2.8.2. (http://www.cmake.org/files/v2.8/cmake-2.8.2.zip)
+2) Download and install CMake gui
 
 3) Open CMake-gui, and generate Visual Studio projects:
-  - Source code to: /nvpro_ samples/build_all
-  - Build fodler: /nvpro_samples/build
-  - Click Configure and select "Use Visual Studio 10 Win64"
+  - Source code path: /nvpro_samples/gl_optix_composite
+  - Binary output path: /nvpro_samples/build
+  - Click Configure and select "Use Visual Studio 10 Win64" (when using VS2010 on Win x64)
   - Click Generate
 
 4) Open the nvpro_samples.sln into Visual Studio 2010, and Build All!
